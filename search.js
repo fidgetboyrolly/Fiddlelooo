@@ -1,6 +1,6 @@
 document.getElementById('searchForm').addEventListener('submit', function(event) {
     event.preventDefault();
-    const searchTerm = document.getElementById('searchInput').value;
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     
     if (isValidUrl(searchTerm)) {
         addUrlToSites(searchTerm).then(() => {
@@ -11,7 +11,7 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
             .then(response => response.text())
             .then(data => {
                 const sites = data.split('\n');
-                const results = sites.filter(site => site.includes(searchTerm));
+                const results = sites.filter(site => site.toLowerCase().includes(searchTerm));
                 displayResults(results);
             });
     }
