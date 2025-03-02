@@ -45,8 +45,17 @@ function displayResults(results) {
     } else {
         results.forEach(result => {
             const resultItem = document.createElement('div');
-            resultItem.textContent = result;
+            const link = document.createElement('a');
+            link.href = result;
+            link.textContent = getTitleFromUrl(result);
+            link.target = '_blank';
+            resultItem.appendChild(link);
             resultsDiv.appendChild(resultItem);
         });
     }
+}
+
+function getTitleFromUrl(url) {
+    // Extract the title from the URL (you can customize this function)
+    return url.replace(/^https?:\/\//, '').replace(/\/$/, '');
 }
