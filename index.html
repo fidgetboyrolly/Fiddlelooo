@@ -26,6 +26,13 @@
                     console.log('Service Worker registration failed:', error);
                 });
         }
+
+        // Run the AI crawler when the website is opened
+        fetch('/run-crawler')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Crawler run:', data);
+            });
     </script>
 </body>
 </html>
