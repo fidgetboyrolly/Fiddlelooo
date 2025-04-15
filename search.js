@@ -4,7 +4,7 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
     
     if (isValidUrl(searchTerm)) {
         addUrlToSites(searchTerm).then(() => {
-            window.location.href = searchTerm;
+            openInPWA(searchTerm);
         });
     } else {
         fetch('sites.txt')
@@ -49,6 +49,10 @@ function displayResults(results) {
             link.href = result;
             link.textContent = getTitleFromUrl(result);
             link.target = '_blank';
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                openInPWA(result);
+            });
             resultItem.appendChild(link);
             resultsDiv.appendChild(resultItem);
         });
@@ -58,4 +62,14 @@ function displayResults(results) {
 function getTitleFromUrl(url) {
     // Extract the title from the URL (you can customize this function)
     return url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+}
+
+function openInPWA(url) {
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        // PWA mode
+        window.location.assign(url);
+    } else {
+        // Fallback to normal browser behavior
+        window.open(url, '_blank');
+    }
 }
