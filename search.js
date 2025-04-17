@@ -1,6 +1,6 @@
-document.getElementById('searchForm').addEventListener('submit', function(event) {
+document.getElementById('fiddleloooForm').addEventListener('submit', function(event) {
     event.preventDefault();
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const searchTerm = document.getElementById('fiddleloooInput').value.toLowerCase();
     
     if (isValidUrl(searchTerm)) {
         addUrlToSites(searchTerm).then(() => {
@@ -38,13 +38,14 @@ async function addUrlToSites(url) {
 }
 
 function displayResults(results) {
-    const resultsDiv = document.getElementById('results');
+    const resultsDiv = document.getElementById('fiddleloooResults');
     resultsDiv.innerHTML = '';
     if (results.length === 0) {
-        resultsDiv.innerHTML = 'No results found.';
+        resultsDiv.innerHTML = '<div class="no-results">No results found.</div>';
     } else {
         results.forEach(result => {
             const resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
             const link = document.createElement('a');
             link.href = result;
             link.textContent = getTitleFromUrl(result);
