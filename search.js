@@ -1,33 +1,73 @@
-let deferredPrompt;
-
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-
-    const installButton = document.createElement('button');
-    installButton.textContent = 'Install Fiddlelooo';
-    installButton.style.position = 'fixed';
-    installButton.style.bottom = '10px';
-    installButton.style.right = '10px';
-    installButton.style.padding = '10px';
-    installButton.style.backgroundColor = '#4caf50';
-    installButton.style.color = 'white';
-    installButton.style.border = 'none';
-    installButton.style.borderRadius = '5px';
-    installButton.style.cursor = 'pointer';
-
-    document.body.appendChild(installButton);
-
-    installButton.addEventListener('click', () => {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === 'accepted') {
-                console.log('User accepted the install prompt');
-            } else {
-                console.log('User dismissed the install prompt');
-            }
-            deferredPrompt = null;
-            document.body.removeChild(installButton);
+document.getElementById('searchForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    
+    if (isValidUrl(searchTerm)) {
+        addUrlToSites(searchTerm).then(() => {
+            openInPWA(searchTerm);
         });
-    });
+    } else {
+        fetch('sites.txt')
+            .then(response => response.text())
+            .then(data => {
+                const sites = data.split('\n');
+                const results = sites.filter(site => site.toLowerCase().includes(searchTerm));
+                displayResults(results);
+            });
+    }
 });
+
+function isValidUrl(string) {
+    try {
+        new URL(string);
+        return true;
+    } catch (_) {
+        return false;  
+    }
+}
+
+async function addUrlToSites(url) {
+    const response = await fetch('/add-url', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ url })
+    });
+    return response.ok;
+}
+
+function displayResults(results) {
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = '';
+    if (results.length === 0) {
+        resultsDiv.innerHTML = '<div class="no-results">No results found.</div>';
+    } else {
+        results.forEach(result => {
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
+            const link = document.createElement('a');
+            link.href = result;
+            link.textContent = getTitleFromUrl(result);
+            link.target = '_blank';
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                openInPWA(result);
+            });
+            resultItem.appendChild(link);
+            resultsDiv.appendChild(resultItem);
+        });
+    }
+}
+
+function getTitleFromUrl(url) {
+    return url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+}
+
+function openInPWA(url) {
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        window.location.assign(url);
+    } else {
+        window.open(url, '_blank');
+    }
+}
