@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" href="Icon-192x192.jpg" sizes="192x192" type="image/jpeg">
-<link rel="apple-touch-icon" href="Icon-512x512.jpg" sizes="512x512" type="image/jpeg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fiddlelooo</title>
@@ -30,13 +28,6 @@
                     console.log('Service Worker registration failed:', error);
                 });
         }
-
-        // Run the AI crawler when the website is opened
-        fetch('/run-crawler')
-            .then(response => response.json())
-            .then(data => {
-                console.log('Crawler run:', data);
-            });
     </script>
 </body>
 </html>
